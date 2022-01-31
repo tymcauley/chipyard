@@ -144,6 +144,7 @@ lazy val testchipip = (project in file("generators/testchipip"))
 lazy val chipyard = (project in file("generators/chipyard"))
   .dependsOn(testchipip, rocketchip, boom, hwacha, sifive_blocks, sifive_cache, iocell,
     sha3, // On separate line to allow for cleaner tutorial-setup patches
+    custom_firrtl_transform,
     dsptools, `rocket-dsp-utils`,
     gemmini, icenet, tracegen, cva6, nvdla, sodor, ibex, fft_generator)
   .settings(libraryDependencies ++= rocketLibDeps.value)
@@ -215,6 +216,7 @@ lazy val iocell = Project(id = "iocell", base = file("./tools/barstools/") / "sr
   .settings(commonSettings)
 
 lazy val tapeout = (project in file("./tools/barstools/"))
+  .dependsOn(custom_firrtl_transform)
   .settings(chiselSettings)
   .settings(chiselTestSettings)
   .enablePlugins(sbtassembly.AssemblyPlugin)
@@ -278,3 +280,6 @@ lazy val fpga_shells = (project in file("./fpga/fpga-shells"))
 lazy val fpga_platforms = (project in file("./fpga"))
   .dependsOn(chipyard, fpga_shells)
   .settings(commonSettings)
+
+lazy val custom_firrtl_transform = (project in file("generators/my-firrtl-transform"))
+  .settings(commonSettings, firrtlSettings)
